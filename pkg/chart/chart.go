@@ -19,6 +19,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"github.com/Masterminds/semver"
@@ -201,7 +202,11 @@ func (c *Chart) HasCIValuesFile(path string) bool {
 // and optional buildID. If a buildID is specified, it will be part of the generated namespace.
 func (c *Chart) CreateInstallParams(buildID string) (release string, namespace string) {
 	release = filepath.Base(c.Path())
-	if release == "." || release == "/" {
+	// check if release name follow DNS-1123
+	dns1123Pattern := `[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*`
+
+	_, err := regexp.Match(dns1123Pattern, []byte(release))
+	if release == "." || release == "/" || err == nil {
 		yaml := c.Yaml()
 		release = yaml.Name
 	}

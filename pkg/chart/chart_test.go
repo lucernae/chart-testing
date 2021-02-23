@@ -362,6 +362,17 @@ func TestGenerateInstallConfig(t *testing.T) {
 				},
 			},
 		},
+		{
+			"v1.0.0-invalid-chart-name",
+			config.Configuration{
+				ReleaseLabel: "app.kubernetes.io/instance",
+			},
+			&Chart{
+				yaml: &util.ChartYaml{
+					Name: "test_charts/bar",
+				},
+			},
+		},
 	}
 
 	for _, testData := range testCases {
